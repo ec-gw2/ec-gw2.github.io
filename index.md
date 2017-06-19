@@ -5,7 +5,7 @@
 
 This page will automatically, update with all the new runs as they are updated.
 
-{% for item in site.static_files | sort: "path"  %}
+{% for item in site.static_files | sort: "modified_time"  %}
   {% assign path = item.path | split:"/" %}
   {% if path[0] == "assets" %}
     {% continue %}
