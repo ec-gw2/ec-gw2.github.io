@@ -12,6 +12,10 @@
   {{item.path}}
 {% endfor %}
 
+{% for item in site.static_files | sort: "path" %}
+  {{item.path}}
+{% endfor %}
+
 {% for item in site.static_files | sort: "path" | reverse  %}
 
 {% assign path = item.path | split:"/" %}
