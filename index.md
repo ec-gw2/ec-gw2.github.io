@@ -3,7 +3,7 @@
 
 # eC Raid runs
 
-This page will automatically, update with all the new runs as they are updated.
+FUCK YOU BURGER.
 
 {% assign date_group = '' %}
 {% for item in site.static_files | sort: "modified_time"  %}
