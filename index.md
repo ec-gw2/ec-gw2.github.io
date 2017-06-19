@@ -9,7 +9,7 @@
 
 
 {% for item in site.static_files | sort: "path" | reverse  %}
-  {{item}}
+  {{item.path}}
 {% endfor %}
 
 {% for item in site.static_files | sort: "path" | reverse  %}
