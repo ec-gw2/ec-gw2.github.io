@@ -3,24 +3,32 @@
 
 # eC Raid runs
 
+{% assign year_group = '' %}
+{% assign month_group = '' %}
+{% assign day_group = '' %}
 
-{% assign date_group = '' %}
-{% for item in site.static_files | sort: "path"  %}
+{% for item in site.static_files | sort: "path" | reverse  %}
 {% assign path = item.path | split:"/" %}
+
 {% if path[0] == "EVTC Logs" %}
   {% continue %}
 {% endif %}
+
 {% if path[0] == "assets" %}
   {% continue %}
-{% else %}
-{% unless path[1] == date_group %}
-  {% capture date_group %}{{path[1]}}{% endcapture %}
-    
-## {{date_group}}
-    
-{% endunless %}
 {% endif %}
+
+{% unless path[1] == year_group %}
+{% capture year_group %}{{path[1]}}{% endcapture %}
+## {{year_group}}
+{% endunless %}
+
+{% unless path[2] == month_group %}
+{% capture month_group %}{{path[2]}}{% endcapture %}
+### {{month_group}}
+{% endunless %}
+
   
-{% assign name = item.path | remove_first:"/" | replace_first:"/"," - " | remove:".html" %}
+{% assign name = item.path | remove_first:"/" | replace:"/"," - " | remove:".html" %}
  * [{{ name }}]({{ item.path }})
 {% endfor %}
