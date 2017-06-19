@@ -21,6 +21,6 @@
 {% endunless %}
 {% endif %}
   
-{% assign name = item.path | remove_first:"/" | replace_first:"/"," - " | replace_first:"/","\" | replace_first:"/"," - " | replace_first:"/","\" | remove:".html" %}
+{% assign name = item.path | remove_first:"/" | replace_first:"/"," - " | replace_first:"/","\" | replace_first:"/"," - " | replace_first:"\","/" | remove:".html" %}
  * [{{ name }}]({{ item.path }})
 {% endfor %}
