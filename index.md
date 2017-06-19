@@ -8,6 +8,9 @@ fuck you BURGER.
 {% assign date_group = '' %}
 {% for item in site.static_files | sort: "modified_time"  %}
   {% assign path = item.path | split:"/" %}
+  {% if path[0] == "EVTC Logs" %}
+    {% continue %}
+  {% endif %}
   {% if path[0] == "assets" %}
     {% continue %}
   {% else %}
