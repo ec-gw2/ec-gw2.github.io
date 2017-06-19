@@ -15,7 +15,7 @@ fuck you BURGER.
     {% continue %}
   {% else %}
   {% unless path[0] == date_group %}
-    {% assign date_group = path[0] %}
+    {% capture date_group %}{{path[0]}}{% endcapture %}
     ## {{date_group}}
   {% endunless %}
   {% endif %}
