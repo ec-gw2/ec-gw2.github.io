@@ -9,3 +9,6 @@ This page will automatically, update with all the new runs as they are updated.
  * [{{ item.path }}]({{ item.path }})
 {% endfor %}
 
+{% for item in site.html_pages %}
+ * [{{ item.path }}]({{ item.path }})
+{% endfor %}
