@@ -5,6 +5,8 @@
 
 fuck you BURGER.
 
+COME ON ADD THE FUCKING DATE_GROUP
+
 {% assign date_group = '' %}
 {% for item in site.static_files | sort: "modified_time"  %}
   {% assign path = item.path | split:"/" %}
