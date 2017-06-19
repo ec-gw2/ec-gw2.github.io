@@ -3,7 +3,7 @@
 
 # eC Raid runs
 
-FUCK YOU BURGER.
+fuck you BURGER.
 
 {% assign date_group = '' %}
 {% for item in site.static_files | sort: "modified_time"  %}
