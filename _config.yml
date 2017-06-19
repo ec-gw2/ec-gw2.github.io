@@ -3,3 +3,6 @@ defaults:
       path: "assets"
     values:
       asset: true
+      
+gems:
+  - jekyll-last-modified-at
