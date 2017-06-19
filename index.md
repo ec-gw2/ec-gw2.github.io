@@ -5,7 +5,7 @@
 
 
 {% assign date_group = '' %}
-{% for item in site.static_files | sort: "path"  %}
+{% for item in site.static_files | sort: "path" | reverse  %}
 {% assign path = item.path | split:"/" %}
 {% if path[0] == "EVTC Logs" %}
   {% continue %}
