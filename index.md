@@ -10,14 +10,17 @@ COME ON ADD THE FUCKING DATE_GROUP
 {% assign date_group = '' %}
 {% for item in site.static_files | sort: "modified_time"  %}
   {% assign path = item.path | split:"/" %}
+  {% for a in path %}
+    - {{a}} -- 
+  {% endfor %}
   {% if path[0] == "EVTC Logs" %}
     {% continue %}
   {% endif %}
   {% if path[0] == "assets" %}
     {% continue %}
   {% else %}
-  {% unless path[0] == date_group %}
-    {% capture date_group %}{{path[0]}}{% endcapture %}
+  {% unless path[1] == date_group %}
+    {% capture date_group %}{{path[1]}}{% endcapture %}
     ## {{date_group}}
   {% endunless %}
   {% endif %}
