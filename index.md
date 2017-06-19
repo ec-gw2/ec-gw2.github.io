@@ -10,7 +10,6 @@ This page will automatically, update with all the new runs as they are updated.
   {% if path[1] == "assets" %}
     {% continue %}
   {% endif %}
-  {{ item.path | split:"/" }}
   {% assign name = item.path | remove_first:"/" | replace_first:"/","-" | remove:".html" %}
  * [{{ name }}]({{ item.path }})
 {% endfor %}
