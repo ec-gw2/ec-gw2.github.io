@@ -8,14 +8,6 @@
 {% assign day_group = '' %}
 
 
-{% for item in site.static_files | reverse  %}
-  {{item.path}}
-{% endfor %}
-
-{% for item in site.static_files %}
-  {{item.path}}
-{% endfor %}
-
 {% for item in site.static_files | sort: "path" | reverse  %}
 
 {% assign path = item.path | split:"/" %}
