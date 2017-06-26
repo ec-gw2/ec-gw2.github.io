@@ -73,6 +73,6 @@
   
   function showGroup(name) {
     document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
-    document.querySelectorAll('tr.child [data-owner='+name+']').forEach(function(i) {i.classList.remove('hide')})
+    document.querySelectorAll('tr.child [data-owner="'+name+'"]').forEach(function(i) {i.classList.remove('hide')})
   }
 </script>
