@@ -20,7 +20,7 @@
   <thead>
     <tr>
       <td data-sort-default>Date</td>
-      <td>Boss</td>
+      <td data-sort-method='none'>Boss</td>
     </tr>
   </thead>
   <tbody>
