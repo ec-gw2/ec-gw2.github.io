@@ -51,13 +51,12 @@
 {% capture _full_date %}{{year_group}}/{{month_group}}/{{day_group}}{% endcapture %}
 {% unless _full_date == full_date %}
 {% assign full_date = _full_date %}
-    <tr onclick="showGroup({{full_date}})">
+    <tr onclick="showGroup('{{full_date}}')">
       <td> {{full_date}} </td>
       <td>-- ((click to view)) --</td>
     </tr>
 {% endunless %}
-
-    <tr class="child" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
+    <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
       <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
