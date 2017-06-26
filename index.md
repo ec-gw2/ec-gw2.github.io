@@ -6,6 +6,7 @@
 {% assign year_group = '' %}
 {% assign month_group = '' %}
 {% assign day_group = '' %}
+{% assign _full_date = '' %}
 
 ## Boss Kills
 
@@ -41,9 +42,18 @@
 {% endunless %}
 {% assign name = item.path | remove_first:"/" | replace:"/"," - " | remove:".html" %}
 
-    <tr onclick="window.location='{{ item.path }}'">
-      <td>{{year_group}}/{{month_group}}/{{day_group}}</td>
-      <td>{{ path[4] | remove:".html" }} (click to view)</td>
+{% capture _full_date %}{{year_group}}/{{month_group}}/{{day_group}}{% endcapture %}
+{% unless _full_date == full_date %}
+{% assign full_date = _full_date %}
+    <tr onclick="showGroup({{full_date}})">
+      <td> {{full_date}} </td>
+      <td>-- ((click to view)) --</td>
+    </tr>
+{% endunless %}
+
+    <tr class="child" data-owner="{{full_date}}" style="/*display:none;*/" onclick="window.open('{{ item.path }}');">
+      <td> - </td>
+      <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
 {% endfor %}
   </tbody>
