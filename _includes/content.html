@@ -1,28 +1,24 @@
----
----
-<style>
-.hide {
-  display: none;
-}
-</style>
+<h1><a class="unstyled" href='/'>eC Raid runs</a></h1>
 
-# eC Raid runs
+<hr />
+
+
+<div class='row'>
+  <div class='col-6'>
 
 {% assign year_group = '' %}
 {% assign month_group = '' %}
 {% assign day_group = '' %}
 {% assign _full_date = '' %}
 
-## Boss Kills
-
-<table id='ec-boss'>
-  <thead>
-    <tr style="cursor: pointer;" >
-      <td data-sort-default>Date</td>
-      <td data-sort-method='none'>Boss</td>
-    </tr>
-  </thead>
-  <tbody>
+    <table id='ec-boss'>
+      <thead>
+        <tr style="cursor: pointer;" >
+          <td data-sort-default>Date</td>
+          <td data-sort-method='none'>Boss</td>
+        </tr>
+      </thead>
+      <tbody>
 {% for item in site.static_files %}
 
 {% assign path = item.path | split:"/" %}
@@ -50,18 +46,37 @@
 {% capture _full_date %}{{year_group}}/{{month_group}}/{{day_group}}{% endcapture %}
 {% unless _full_date == full_date %}
 {% assign full_date = _full_date %}
-    <tr style="cursor: pointer;"  onclick="showGroup('{{full_date}}')">
-      <td> {{full_date}} </td>
-      <td>-- ((click to view)) --</td>
-    </tr>
+        <tr style="cursor: pointer;"  onclick="showGroup('{{full_date}}')">
+          <td> {{full_date}} </td>
+          <td>-- ((click to view)) --</td>
+        </tr>
 {% endunless %}
-    <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
-      <td data-sort="{{full_date}}"> - </td>
-      <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
-    </tr>
+        <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
+          <td data-sort="{{full_date}}"> - </td>
+          <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
+        </tr>
 {% endfor %}
-  </tbody>
-</table>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div class='col-6'>
+    <h3>eC Members</h3>
+    <ul>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+      <li><a href="#">Member</a></li>
+    </ul>
+  </div>
+
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/tablesort.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/sorts/tablesort.date.min.js"></script>
@@ -69,7 +84,7 @@
   new Tablesort(document.getElementById('ec-boss'), {
    descending: true
   });
-  
+
   var openTab;
   function showGroup(name) {
     document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})

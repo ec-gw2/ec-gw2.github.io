@@ -3,6 +3,11 @@ defaults:
       path: "assets"
     values:
       asset: true
-      
+
 gems:
   - jekyll-last-modified-at
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+permalink: pretty
+exclude: [vendor, build, Gemfile, CNAME]
