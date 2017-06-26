@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang = "en"
+><head>
+	<meta charset = "utf-8">
+	<meta http - equiv = "X-UA-Compatible" content = "IE=edge">
+	<meta name = "viewport" content = "width=device-width, initial-scale=1">
+	<meta name = "description" content = "">
+	<meta name = "author" content = "">
+	<title>Report - Sabetha the Saboteur</title>
+	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity = "sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin = "anonymous">
+	<link rel = "stylesheet" href = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity = "sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin = "anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.css"/>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity = "sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin = "anonymous"></script>
+	<script src = "https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.13/sorting/alt-string.js"></script>
+	<script type="text/javascript">
+$.extend( $.fn.dataTable.defaults, {
+    searching: false,
+    ordering:  true,
+    paging: false,
+    dom: "t"
+} );
+
+$(document).ready(function() {
+   var tables = $("table"),
+           stats = tables.filter(".table_stats");
+   stats.eq(0).DataTable({
+       "order": [[4, "desc"]],
+       "columnDefs": [
+               { "type": "alt-string", targets: 1 },
+               {"orderable": false, targets : [7,11]}
+            ]
+   });
+   stats.not(":eq(0)").DataTable({
+       "order": [[3, "desc"]],
+       "columnDefs": [
+               { "type": "alt-string", targets: 1 },
+               {"orderable": false, targets : [6,10]}
+            ]
+   });
+   tables.filter(".table_boons").DataTable({
+       "order": [[0, "asc"]],
+       "columnDefs": [
+               { "type": "alt-string", targets: 1 },
+            ]
+   });
+   tables.filter(".table_skills").DataTable({
+       "order": [[1, "desc"]]
+   });
+});
+	</script>
+	<style>
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #444;
+}
+td, th {
+    text-align: center;
+    white-space: nowrap;
+}
+.sorting_disabled {
+    padding: 5px !important;
+}
+table.dataTable.table-condensed .sorting::after, table.dataTable.table-condensed .sorting_asc::after, table.dataTable.table-condensed .sorting_desc::after {
+   right: 4px !important;
+}
+table.dataTable thead .sorting_desc::after {
+   color: red;
+}
+table.dataTable thead .sorting_asc::after {
+   color: green;
+}
+.text-left {
+    text-align: left;
+}
+.nav-tabs > li, .nav-pills > li {
+    float:none;
+    display:inline-block;
+    *display:inline; /* ie7 fix */
+     zoom:1; /* hasLayout ie7 trigger */
+}
+.nav-tabsc, .nav-pillsc {
+    text-align:center;
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    color:black;
+    background-color:#f2f2f2;
+}
+.table > tfoot > tr > td {
+    background-color: #FDFDFD;
+    color: #666;
+}
+.table > tfoot > tr:first-child > td, .table > tfoot > tr:last-child > td {
+    border-top: 3px solid #ddd;
+}
+table.dataTable thead .sorting::after { opacity: 0 !important; }
+table.dataTable.table-condensed > thead > tr > th.sorting { padding-right: 5px !important; }
+.rot-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 5px 0px;
+}
+.rot-table > tbody > tr > td {
+	padding: 1px;
+	text-align: left;
+}
+.rot-table > thead {
+	vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+}
+.rot-table > thead > tr > th {
+	padding: 10px 1px 9px 1px;
+    line-height: 18px;
+    text-align: left;
+}.crop-cast {
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    margin-left: 2px;
+    margin-top: 2px;
+    display: inline-block;
+}
+
+.crop-cast img {
+    width: 24px;
+    height: 24px;
+    margin: -2px 0 0 -2px;
+}.crop-buff {
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+    display: inline-block;
+}
+
+.crop-buff img {
+    width: 28px;
+    height: 28px;
+    margin: -2px 0 0 -2px;
+}.sr-skill {    width: 24px;
+    height: 24px;
+    display: inline-block;
+}.sr-text {    height: 24px;
+    display: inline-block;
+    padding: 2px 0px;
+}.sr-failed {    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-color: #ff9999;
+}	</style>
+</head>
+<body>
+<div class = "container"><div class="row">
+<center>
+	<h1>Sabetha the Saboteur</h1>
+	<p class="text">34015256 Health, 2748 Armor (1374 Toughness)</p>
+	<p class="text text-muted" id="timestamp"></p>
+	<script>var d = new Date(1498499509000);document.getElementById("timestamp").innerHTML = d;</script>
+	<p class="text text-danger">Fail in 1.0 seconds</p>
+<p/><table class="table" style="width:auto;">
+<tr><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" data-toggle="tooltip" title="Engineer" height="18" width="18"><img src="https://wiki.guildwars2.com/images/5/54/Condition_Damage.png" alt="Condition Damage" data-toggle="tooltip" title="Condition Damage - 9" height="18" width="18"><br/>Selobro</td><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"><img src="https://wiki.guildwars2.com/images/5/54/Condition_Damage.png" alt="Condition Damage" data-toggle="tooltip" title="Condition Damage - 8" height="18" width="18"><br/>Xitsee Ran</td><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" data-toggle="tooltip" title="Berserker" height="18" width="18"><img src="https://wiki.guildwars2.com/images/5/54/Condition_Damage.png" alt="Condition Damage" data-toggle="tooltip" title="Condition Damage - 10" height="18" width="18"><br/>Vaas The F</td><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" data-toggle="tooltip" title="Druid" height="18" width="18"><img src="https://wiki.guildwars2.com/images/5/54/Condition_Damage.png" alt="Condition Damage" data-toggle="tooltip" title="Condition Damage - 8" height="18" width="18"><br/>Droplets O</td><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"><img src="https://wiki.guildwars2.com/images/1/12/Toughness.png" alt="Toughness" data-toggle="tooltip" title="Toughness - 10" height="18" width="18"><img src="https://wiki.guildwars2.com/images/8/81/Healing_Power.png" alt="Healing Power" data-toggle="tooltip" title="Healing Power - 10" height="18" width="18"><br/>Shattering</td></tr>
+<tr><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"><img src="https://wiki.guildwars2.com/images/5/54/Condition_Damage.png" alt="Condition Damage" data-toggle="tooltip" title="Condition Damage - 9" height="18" width="18"><br/>Solarburge</td><td style="width: 100px; border: 1px solid #ddd;"><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"><img src="https://wiki.guildwars2.com/images/1/12/Toughness.png" alt="Toughness" data-toggle="tooltip" title="Toughness - 10" height="18" width="18"><img src="https://wiki.guildwars2.com/images/8/81/Healing_Power.png" alt="Healing Power" data-toggle="tooltip" title="Healing Power - 10" height="18" width="18"><br/>Tmnd M</td></tr>
+</table>
+</center>
+</div>
+<ul class = "nav nav-pills" style="text-align:center; margin-bottom: 5px;">
+<li class="active"><a data-toggle="tab" href="#s_glob">Stats</a></li>
+<li><a data-toggle="tab" href="#g_glob">Damage and Mechanics</a></li>
+<li><a data-toggle="tab" href="#bs_glob">Boon Stats</a></li>
+<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Boon Uptime<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#p_glob3057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#p_glob3057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#p_glob3057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#p_glob3057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#p_glob3057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#p_glob3058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#p_glob3058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Player Summary<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#ps_glob3057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#ps_glob3057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#ps_glob3057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#ps_glob3057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#ps_glob3057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#ps_glob3058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#ps_glob3058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Skill Rotation<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#prot_glob3057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#prot_glob3057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#prot_glob3057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#prot_glob3057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#prot_glob3057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#prot_glob3058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#prot_glob3058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li></ul>
+<div class="tab-content">
+<div id="g_glob" class="tab-pane fade">
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#dps_glob">Fulltime DPS</a></li>
+  <li><a data-toggle="tab" href="#dps10_glob">10s DPS</a></li>
+  <li><a data-toggle="tab" href="#dps30_glob">30s DPS</a></li>
+</ul>
+<div class="tab-content">
+<div id="dps_glob" class="tab-pane fade in active">
+<center><div id="myDiv_glob" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0, 0, 0, 0, 0.023, 0.027, 0.121, 0.122, 0.421, 0.446, 0.447, 0.45, 0.522, 0.621, 0.772, 0.848, 0.97],
+	y: [0, nan, nan, 0, null, null, null, null, null, null, null, null, null, null, null, null, null],
+	text: ['', 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace00 = {
+	x:[0.023, 0.97],
+	y: [nan, nan],
+	text: [0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Phase 1 (until Kernan) DPS', line : {color: 'rgb(196, 204, 239)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace00, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv_glob', data, layout);
+</script>
+</div>
+<div id="dps10_glob" class="tab-pane fade">
+<center><div id="myDiv10_glob" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0, 0, 0, 0, 0.023, 0.027, 0.121, 0.122, 0.421, 0.446, 0.447, 0.45, 0.522, 0.621, 0.772, 0.848, 0.97],
+	y: [0, nan, nan, 0, null, null, null, null, null, null, null, null, null, null, null, null, null],
+	text: ['', 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace00 = {
+	x:[0.023, 0.97],
+	y: [nan, nan],
+	text: [0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Phase 1 (until Kernan) DPS', line : {color: 'rgb(196, 204, 239)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace00, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv10_glob', data, layout);
+</script>
+</div>
+<div id="dps30_glob" class="tab-pane fade">
+<center><div id="myDiv30_glob" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0, 0, 0, 0, 0.023, 0.027, 0.121, 0.122, 0.421, 0.446, 0.447, 0.45, 0.522, 0.621, 0.772, 0.848, 0.97],
+	y: [0, nan, nan, 0, null, null, null, null, null, null, null, null, null, null, null, null, null],
+	text: ['', 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace00 = {
+	x:[0.023, 0.97],
+	y: [nan, nan],
+	text: [0, 0],
+	mode: 'lines', hoverinfo: 'text', name : 'Phase 1 (until Kernan) DPS', line : {color: 'rgb(196, 204, 239)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace00, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv30_glob', data, layout);
+</script>
+</div>
+</div>
+</div>
+<div id="s_glob" class="tab-pane fade in active">
+<table class="table table-condensed table_stats">
+<thead>
+	<tr><th>Group</th><th></th><th class="text-left">Character</th><th>Display Name</th><th>Boss DPS</th><th>Physical</th><th>Condi</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>All DPS</th><th>Physical</th><th>Condi</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>Inc Dmg</th><th><div data-toggle="tooltip" title="Sum of time of interrupted casts, in seconds">Wasted</div></th><th><div data-toggle="tooltip" title="Number of failed mechanics">Failed</div></th><th><img src="https://wiki.guildwars2.com/images/9/95/Critical_Chance.png" alt="Crits" data-toggle="tooltip" title="Crit chance" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/thumb/2/2b/Superior_Rune_of_the_Scholar.png/40px-Superior_Rune_of_the_Scholar.png" alt="Scholar" data-toggle="tooltip" title="Scholar Rune uptime (health > 90% when hit)" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/1/1c/Bowl_of_Seaweed_Salad.png" alt="Seaweed Salad" data-toggle="tooltip" title="Seaweed Salad uptime (was moving when hit)" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/c/c6/Downed_enemy.png" alt="Downed" data-toggle="tooltip" title="Downed" height="18" width="18"></th><th></th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" data-toggle="tooltip" title="Engineer" height="18" width="18"></td><td class="text-left">Selobro</td><td>Selo.3971</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Tmnd M</td><td>TheOnly.8937</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" data-toggle="tooltip" title="Berserker" height="18" width="18"></td><td class="text-left">Vaas The Finest</td><td>MaxL.1496</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" data-toggle="tooltip" title="Druid" height="18" width="18"></td><td class="text-left">Droplets Of Life</td><td>iAscendancy.4356</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Shattering Kite</td><td>Kite.8015</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Solarburger</td><td>Valentine.9732</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Xitsee Rang</td><td>Sixtree.3492</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+</tbody>
+<tfoot>
+	<tr><td></td><td></td><td class="text-left">Group 1</td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td class="text-left">Group 2</td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td class="text-left">Total</td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tfoot>
+</table>
+</div>
+<div id="p_glob3057157312163710256" class="tab-pane">
+<center><div id="myDivB3057157312163710256_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Selobro', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3057157312163710256_glob', data, layout);</script></div>
+<div id="p_glob3057157724480571504" class="tab-pane">
+<center><div id="myDivB3057157724480571504_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Tmnd M', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3057157724480571504_glob', data, layout);</script></div>
+<div id="p_glob3057160537684160784" class="tab-pane">
+<center><div id="myDivB3057160537684160784_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Vaas The Finest', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3057160537684160784_glob', data, layout);</script></div>
+<div id="p_glob3057162831105464896" class="tab-pane">
+<center><div id="myDivB3057162831105464896_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Droplets Of Life', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3057162831105464896_glob', data, layout);</script></div>
+<div id="p_glob3057179023223399024" class="tab-pane">
+<center><div id="myDivB3057179023223399024_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Shattering Kite', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3057179023223399024_glob', data, layout);</script></div>
+<div id="p_glob3058463827816229264" class="tab-pane">
+<center><div id="myDivB3058463827816229264_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Solarburger', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3058463827816229264_glob', data, layout);</script></div>
+<div id="p_glob3058469349379700832" class="tab-pane">
+<center><div id="myDivB3058469349379700832_glob" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Xitsee Rang', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB3058469349379700832_glob', data, layout);</script></div>
+<div id="ps_glob3057157312163710256" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30571573121637102560"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</li><li><a data-toggle="tab" href="#psid_glob3057157312163710256">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30571573121637102560" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3057157312163710256" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3057157312163710256">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3057157312163710256">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3057157312163710256">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3057157312163710256" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3057157312163710256" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3057157312163710256" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3057157724480571504" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30571577244805715040"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</li><li><a data-toggle="tab" href="#psid_glob3057157724480571504">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30571577244805715040" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3057157724480571504" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3057157724480571504">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3057157724480571504">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3057157724480571504">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3057157724480571504" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3057157724480571504" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3057157724480571504" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3057160537684160784" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30571605376841607840"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</li><li><a data-toggle="tab" href="#psid_glob3057160537684160784">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30571605376841607840" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3057160537684160784" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3057160537684160784">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3057160537684160784">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3057160537684160784">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3057160537684160784" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3057160537684160784" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3057160537684160784" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3057162831105464896" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30571628311054648960"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</li><li><a data-toggle="tab" href="#psid_glob3057162831105464896">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30571628311054648960" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3057162831105464896" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3057162831105464896">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3057162831105464896">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3057162831105464896">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3057162831105464896" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3057162831105464896" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3057162831105464896" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3057179023223399024" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30571790232233990240"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</li><li><a data-toggle="tab" href="#psid_glob3057179023223399024">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30571790232233990240" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody><tr><td class="text-left"><img src="https://render.guildwars2.com/file/C6352A11D34B060628DE02A6509F6719403E7707/103198.png" height="24" width="24"> Temporal Curtain</td><td><span data-toggle="tooltip" title="1 casts">0</td><td>nan%</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div><div id="psid_glob3057179023223399024" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3057179023223399024">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3057179023223399024">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3057179023223399024">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3057179023223399024" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3057179023223399024" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3057179023223399024" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3058463827816229264" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30584638278162292640"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</li><li><a data-toggle="tab" href="#psid_glob3058463827816229264">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30584638278162292640" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3058463827816229264" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3058463827816229264">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3058463827816229264">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3058463827816229264">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3058463827816229264" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3058463827816229264" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3058463827816229264" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob3058469349379700832" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob30584693493797008320"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</li><li><a data-toggle="tab" href="#psid_glob3058469349379700832">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob30584693493797008320" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob3058469349379700832" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob3058469349379700832">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob3058469349379700832">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob3058469349379700832">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob3058469349379700832" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob3058469349379700832" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob3058469349379700832" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="prot_glob3057157312163710256" class="tab-pane">
+<center><h4>Selobro</h4></center></div><div id="prot_glob3057157724480571504" class="tab-pane">
+<center><h4>Tmnd M</h4></center></div><div id="prot_glob3057160537684160784" class="tab-pane">
+<center><h4>Vaas The Finest</h4></center></div><div id="prot_glob3057162831105464896" class="tab-pane">
+<center><h4>Droplets Of Life</h4></center></div><div id="prot_glob3057179023223399024" class="tab-pane">
+<center><h4>Shattering Kite</h4></center></div><div id="prot_glob3058463827816229264" class="tab-pane">
+<center><h4>Solarburger</h4></center></div><div id="prot_glob3058469349379700832" class="tab-pane">
+<center><h4>Xitsee Rang</h4></center></div><div id="bs_glob" class="tab-pane fade">
+<table class="table table-condensed table_boons"
+><thead><tr><th>Group</th><th></th><th class="text-left">Character</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" data-toggle="tooltip" title="Engineer" height="18" width="18"></td><td class="text-left">Selobro</td></tr>
+<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Tmnd M</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" data-toggle="tooltip" title="Berserker" height="18" width="18"></td><td class="text-left">Vaas The Finest</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" data-toggle="tooltip" title="Druid" height="18" width="18"></td><td class="text-left">Droplets Of Life</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Shattering Kite</td></tr>
+<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Solarburger</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Xitsee Rang</td></tr>
+</tbody><tfoot>
+<tr><td></td><td></td><td class="text-left">Average</td></tr></tfoot></table>
+</div>
+</div>
+<center><h3>Phase 1 (until Kernan)</h3><p class="text text-muted">100% to 75% in 1.0 seconds</p></center><ul class = "nav nav-pills" style="text-align:center; margin-bottom: 5px;">
+<li class="active"><a data-toggle="tab" href="#g0">Damage and Mechanics</a></li>
+<li><a data-toggle="tab" href="#s0">Stats</a></li>
+<li><a data-toggle="tab" href="#bs0">Boon Stats</a></li>
+<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Boon Uptime<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#p03057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#p03057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#p03057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#p03057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#p03057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#p03058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#p03058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Player Summary<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#ps_glob03057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#ps_glob03057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#ps_glob03057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#ps_glob03057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#ps_glob03057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#ps_glob03058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#ps_glob03058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li><li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Skill Rotation<span class="caret"></span></a><ul class="dropdown-menu"><li><a data-toggle="tab" href="#prot03057157312163710256"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</a></li>
+<li><a data-toggle="tab" href="#prot03057157724480571504"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</a></li>
+<li><a data-toggle="tab" href="#prot03057160537684160784"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</a></li>
+<li><a data-toggle="tab" href="#prot03057162831105464896"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</a></li>
+<li><a data-toggle="tab" href="#prot03057179023223399024"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</a></li>
+<li><a data-toggle="tab" href="#prot03058463827816229264"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</a></li>
+<li><a data-toggle="tab" href="#prot03058469349379700832"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</a></li>
+</ul></li></ul>
+<div class="tab-content">
+<div id="g0" class="tab-pane fade in active">
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#dps0">Fulltime DPS</a></li>
+  <li><a data-toggle="tab" href="#dps100">10s DPS</a></li>
+  <li><a data-toggle="tab" href="#dps300">30s DPS</a></li>
+</ul>
+<div class="tab-content">
+<div id="dps0" class="tab-pane fade in active">
+<center><div id="myDiv0" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0.97],
+	y: [nan],
+	text: [0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv0', data, layout);
+</script>
+</div>
+<div id="dps100" class="tab-pane fade">
+<center><div id="myDiv100" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0.97],
+	y: [nan],
+	text: [0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv100', data, layout);
+</script>
+</div>
+<div id="dps300" class="tab-pane fade">
+<center><div id="myDiv300" style="width: 1100px ; height: 500px;"></div></center>
+<script>
+var trace0 = {
+	x:[0.97],
+	y: [nan],
+	text: [0],
+	mode: 'lines', hoverinfo: 'text', name : 'Group DPS', line : {color: 'rgb(220, 220, 220)', shape : 'spline', width : 1, smoothing:1.3}, fill : 'tozeroy'
+};
+var trace1 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Selobro',line: { color: 'rgb(208, 156, 89)', shape: 'spline', width : 2 }
+};
+var trace2 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Tmnd M',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace3 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Vaas The Finest',line: { color: 'rgb(255, 209, 102)', shape: 'spline', width : 2 }
+};
+var trace4 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Droplets Of Life',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace5 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Shattering Kite',line: { color: 'rgb(182, 121, 213)', shape: 'spline', width : 2 }
+};
+var trace6 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Solarburger',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var trace7 = {
+	x:[0.97],
+	y: [0],
+	mode: 'lines', hoverinfo: 'y+name', name: 'Xitsee Rang',line: { color: 'rgb(140, 220, 130)', shape: 'spline', width : 2 }
+};
+var data = [trace0, trace1, trace2, trace3, trace4, trace5, trace6, trace7];
+var layout = { xaxis: {title: 'Encounter time, s'}, yaxis : {title: 'DPS'}, margin : { t: 30, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}};
+Plotly.newPlot('myDiv300', data, layout);
+</script>
+</div>
+</div>
+</div>
+<div id="s0" class="tab-pane fade">
+<table class="table table-condensed table_stats">
+<thead>
+	<tr><th>Group</th><th></th><th class="text-left">Character</th><th>Boss DPS</th><th>Physical</th><th>Condi</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>All DPS</th><th>Physical</th><th>Condi</th><th>&nbsp;&nbsp;&nbsp;&nbsp;</th><th>Inc Dmg</th><th><div data-toggle="tooltip" title="Sum of time of interrupted casts, in seconds">Wasted</div></th><th><div data-toggle="tooltip" title="Number of failed mechanics">Failed</div></th><th><img src="https://wiki.guildwars2.com/images/9/95/Critical_Chance.png" alt="Crits" data-toggle="tooltip" title="Crit chance" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/thumb/2/2b/Superior_Rune_of_the_Scholar.png/40px-Superior_Rune_of_the_Scholar.png" alt="Scholar" data-toggle="tooltip" title="Scholar Rune uptime (health > 90% when hit)" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/1/1c/Bowl_of_Seaweed_Salad.png" alt="Seaweed Salad" data-toggle="tooltip" title="Seaweed Salad uptime (was moving when hit)" height="18" width="18"></th><th><img src="https://wiki.guildwars2.com/images/c/c6/Downed_enemy.png" alt="Downed" data-toggle="tooltip" title="Downed" height="18" width="18"></th><th></th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" data-toggle="tooltip" title="Engineer" height="18" width="18"></td><td class="text-left">Selobro</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Tmnd M</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" data-toggle="tooltip" title="Berserker" height="18" width="18"></td><td class="text-left">Vaas The Finest</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" data-toggle="tooltip" title="Druid" height="18" width="18"></td><td class="text-left">Droplets Of Life</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Shattering Kite</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Solarburger</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+	<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Xitsee Rang</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td>0</td><td><span data-toggle="tooltip" title="0 times">0.0</span></td><td>0</td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td><span data-toggle="tooltip" title="0 of 1">0%</span></td><td>0</td><td data-order="0"></td></tr>
+</tbody>
+<tfoot>
+	<tr><td></td><td></td><td class="text-left">Group 1</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td class="text-left">Group 2</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+	<tr><td></td><td></td><td class="text-left">Total</td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td></td><td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td><span data-toggle="tooltip" title="0 dmg">0</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tfoot>
+</table>
+</div>
+<div id="p03057157312163710256" class="tab-pane">
+<center><div id="myDivB30571573121637102560" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Selobro', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30571573121637102560', data, layout);</script></div>
+<div id="p03057157724480571504" class="tab-pane">
+<center><div id="myDivB30571577244805715040" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Tmnd M', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30571577244805715040', data, layout);</script></div>
+<div id="p03057160537684160784" class="tab-pane">
+<center><div id="myDivB30571605376841607840" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Vaas The Finest', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30571605376841607840', data, layout);</script></div>
+<div id="p03057162831105464896" class="tab-pane">
+<center><div id="myDivB30571628311054648960" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Droplets Of Life', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30571628311054648960', data, layout);</script></div>
+<div id="p03057179023223399024" class="tab-pane">
+<center><div id="myDivB30571790232233990240" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Shattering Kite', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30571790232233990240', data, layout);</script></div>
+<div id="p03058463827816229264" class="tab-pane">
+<center><div id="myDivB30584638278162292640" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Solarburger', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30584638278162292640', data, layout);</script></div>
+<div id="p03058469349379700832" class="tab-pane">
+<center><div id="myDivB30584693493797008320" style="width: 900px ; height: 310px;"></div></center><script>
+var data = [traceB0];var layout = { title: 'Click on boon to see uptime on Xitsee Rang', xaxis: {title: 'Encounter time, s'	},yaxis : {showgrid: false, zeroline: false, showline : false, ticks : '', showticklabels : false}, margin : {   t: 60, b : 50, l : 50, r : 50}, legend: {"orientation": "h"}}; Plotly.newPlot('myDivB30584693493797008320', data, layout);</script></div>
+<div id="bs0" class="tab-pane fade">
+<table class="table table-condensed table_boons"
+><thead><tr><th>Group</th><th></th><th class="text-left">Character</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" data-toggle="tooltip" title="Engineer" height="18" width="18"></td><td class="text-left">Selobro</td></tr>
+<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Tmnd M</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" data-toggle="tooltip" title="Berserker" height="18" width="18"></td><td class="text-left">Vaas The Finest</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" data-toggle="tooltip" title="Druid" height="18" width="18"></td><td class="text-left">Droplets Of Life</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" data-toggle="tooltip" title="Chronomancer" height="18" width="18"></td><td class="text-left">Shattering Kite</td></tr>
+<tr><td>2</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Solarburger</td></tr>
+<tr><td>1</td><td><img src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" data-toggle="tooltip" title="Ranger" height="18" width="18"></td><td class="text-left">Xitsee Rang</td></tr>
+</tbody><tfoot>
+<tr><td></td><td></td><td class="text-left">Average</td></tr></tfoot></table>
+</div>
+<div id="ps_glob03057157312163710256" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030571573121637102560"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/2/27/Engineer_tango_icon_20px.png" alt="Engineer" title="Engineer" height="18" width="18"> Selobro</li><li><a data-toggle="tab" href="#psid_glob03057157312163710256">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030571573121637102560" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03057157312163710256" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03057157312163710256">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03057157312163710256">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03057157312163710256">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03057157312163710256" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03057157312163710256" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03057157312163710256" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03057157724480571504" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030571577244805715040"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Tmnd M</li><li><a data-toggle="tab" href="#psid_glob03057157724480571504">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030571577244805715040" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03057157724480571504" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03057157724480571504">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03057157724480571504">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03057157724480571504">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03057157724480571504" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03057157724480571504" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03057157724480571504" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03057160537684160784" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030571605376841607840"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/da/Berserker_tango_icon_20px.png" alt="Berserker" title="Berserker" height="18" width="18"> Vaas The Finest</li><li><a data-toggle="tab" href="#psid_glob03057160537684160784">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030571605376841607840" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03057160537684160784" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03057160537684160784">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03057160537684160784">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03057160537684160784">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03057160537684160784" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03057160537684160784" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03057160537684160784" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03057162831105464896" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030571628311054648960"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/d/d2/Druid_tango_icon_20px.png" alt="Druid" title="Druid" height="18" width="18"> Droplets Of Life</li><li><a data-toggle="tab" href="#psid_glob03057162831105464896">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030571628311054648960" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03057162831105464896" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03057162831105464896">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03057162831105464896">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03057162831105464896">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03057162831105464896" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03057162831105464896" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03057162831105464896" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03057179023223399024" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030571790232233990240"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/f/f4/Chronomancer_tango_icon_20px.png" alt="Chronomancer" title="Chronomancer" height="18" width="18"> Shattering Kite</li><li><a data-toggle="tab" href="#psid_glob03057179023223399024">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030571790232233990240" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody><tr><td class="text-left"><img src="https://render.guildwars2.com/file/C6352A11D34B060628DE02A6509F6719403E7707/103198.png" height="24" width="24"> Temporal Curtain</td><td><span data-toggle="tooltip" title="1 casts">0</td><td>nan%</span></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div><div id="psid_glob03057179023223399024" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03057179023223399024">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03057179023223399024">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03057179023223399024">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03057179023223399024" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03057179023223399024" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03057179023223399024" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03058463827816229264" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030584638278162292640"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Solarburger</li><li><a data-toggle="tab" href="#psid_glob03058463827816229264">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030584638278162292640" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03058463827816229264" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03058463827816229264">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03058463827816229264">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03058463827816229264">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03058463827816229264" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03058463827816229264" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03058463827816229264" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="ps_glob03058469349379700832" class="tab-pane">
+<div class="container-fluid">
+<div class="row"><div class="col-sm-8" style="min-width: 730px;"><ul class="nav nav-tabs"><li class="active"><a data-toggle="tab" href="#pss_glob030584693493797008320"><img data-toggle="tooltip" src="https://wiki.guildwars2.com/images/4/43/Ranger_tango_icon_20px.png" alt="Ranger" title="Ranger" height="18" width="18"> Xitsee Rang</li><li><a data-toggle="tab" href="#psid_glob03058469349379700832">Incoming damage</a></li></ul><div class="tab-content">
+<div id="pss_glob030584693493797008320" class="tab-pane fade in active"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div><div id="psid_glob03058469349379700832" class="tab-pane fade"><table class="table table-condensed table_skills"><thead><tr><th class="text-left">Skill</th><th>Damage</th><th></th><th>Hits</th><th>Min</th><th>Avg</th><th>Max</th><th>Crit</th><th>Flank</th><th>Glance</th><th>Wasted</th></tr></thead><tbody></tbody></table></div></div></div><div class="col-sm-4"><h4>Stats</h4><ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#pso_glob03058469349379700832">Offense</a></li>
+  <li><a data-toggle="tab" href="#psd_glob03058469349379700832">Defense</a></li>
+  <li><a data-toggle="tab" href="#psu_glob03058469349379700832">Support</a></li>
+</ul>
+<div class="tab-content">
+<div id="pso_glob03058469349379700832" class="tab-pane fade in active">
+<table class="table table-condensed"><tr><td class="text-left">Criticals</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Moving while hitting</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Health > 90%</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Glance Rate</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Flanking</td><td><span data-toggle="tooltip" title="0 of 1">0.0%</span></td></tr><tr><td class="text-left">Average Boon Count</td><td>0.0</td></tr><tr><td class="text-left">Casting Time Wasted</td><td>0.0s</td></tr><tr><td class="text-left">Missed</td><td>0</td></tr><tr><td class="text-left">Interrupted</td><td>0</td></tr><tr><td class="text-left">Boons Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psd_glob03058469349379700832" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Damage Taken</td><td>0</td></tr><tr><td class="text-left">Downed</td><td>0</td></tr><tr><td class="text-left">Death</td><td> </td></tr><tr><td class="text-left">Dodges</td><td>0</td></tr><tr><td class="text-left">Evades</td><td>0</td></tr><tr><td class="text-left">Blocks</td><td>0</td></tr><tr><td class="text-left">Was Cleansed</td><td>0.0s (0 times)</td></tr><tr><td class="text-left">Was Stripped</td><td>0.0s (0 times)</td></tr></table></div>
+<div id="psu_glob03058469349379700832" class="tab-pane fade">
+<table class="table table-condensed"><tr><td class="text-left">Resurrects</td><td>0</tr></td><tr><td class="text-left">Ressurect Time</td><td>0.0s</td></tr><tr><td class="text-left">Conditions Cleansed</td><td>0.0s (0 times)</td></tr></td></tr></table><br/></div></div>
+</div></div></div></div><div id="prot03057157312163710256" class="tab-pane">
+<center><h4>Selobro</h4></center></div><div id="prot03057157724480571504" class="tab-pane">
+<center><h4>Tmnd M</h4></center></div><div id="prot03057160537684160784" class="tab-pane">
+<center><h4>Vaas The Finest</h4></center></div><div id="prot03057162831105464896" class="tab-pane">
+<center><h4>Droplets Of Life</h4></center></div><div id="prot03057179023223399024" class="tab-pane">
+<center><h4>Shattering Kite</h4></center></div><div id="prot03058463827816229264" class="tab-pane">
+<center><h4>Solarburger</h4></center></div><div id="prot03058469349379700832" class="tab-pane">
+<center><h4>Xitsee Rang</h4></center></div></div>
+<script>
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	  // Change the selector if needed
+	var $table = $('.rot-table'),
+		$bodyCells = $table.find('tbody tr:first').children(),
+		colWidth;
+
+	// Get the tbody columns width array
+	colWidth = $bodyCells.map(function() {
+		return $(this).width();
+	}).get();
+
+	// Set the width of thead columns
+	$table.find('thead tr').children().each(function(i, v) {
+		$(v).width(colWidth[i]);
+	});  
+});	  // Change the selector if needed
+	var $table = $('.rot-table'),
+		$bodyCells = $table.find('tbody tr:first').children(),
+		colWidth;
+
+	// Get the tbody columns width array
+	colWidth = $bodyCells.map(function() {
+		return $(this).width();
+	}).get();
+
+	// Set the width of thead columns
+	$table.find('thead tr').children().each(function(i, v) {
+		$(v).width(colWidth[i]);
+	});  
+$(document).ready(function(){
+$('[data-toggle="tooltip"]').tooltip();
+});</script>
+<p></p>
+<p class="small text-muted text-right">raid_heroes-1.2-3-gf911e0f by MaxL | 20170626-195150.evtc | EVTC20170606 | 15375(0x3c0f) | GW2:78457<br/>report.gen_10dps:true | report.gen_30dps:true | render.rotation_weap1:false</p>
+</div>
+</body>
+</html>
