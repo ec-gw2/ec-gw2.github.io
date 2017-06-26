@@ -55,7 +55,7 @@
       <td>-- ((click to view)) --</td>
     </tr>
 {% endunless %}
-    <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
+    <tr class="child hide" data-owner="{{full_date}}" data-url="{{ item.path }}" onclick="open(this);">
       <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
@@ -69,6 +69,11 @@
   new Tablesort(document.getElementById('ec-boss'), {
    descending: true
   });
+  
+  function open(target) {
+    var url = target.getAttribute('data-url');
+    window.open(url);
+  }
   
   var open;
   function showGroup(name) {
