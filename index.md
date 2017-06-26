@@ -55,7 +55,7 @@
       <td>-- ((click to view)) --</td>
     </tr>
 {% endunless %}
-    <tr class="child hide" data-owner="{{full_date}}" data-url="{{ item.path }}" onclick="open(this);">
+    <tr class="child hide" data-owner="{{full_date}}" onclick="openUrl({{ item.path }});">
       <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
@@ -70,8 +70,7 @@
    descending: true
   });
   
-  function open(target) {
-    var url = target.getAttribute('data-url');
+  function openUrl(url) {
     window.open(url);
   }
   
