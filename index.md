@@ -7,8 +7,17 @@
 {% assign month_group = '' %}
 {% assign day_group = '' %}
 
+## Boss Kills
 
-{% for item in site.static_files | sort: "path" | reverse  %}
+<table>
+  <thead>
+    <tr>
+      <td>Date</td>
+      <td>Boss</td>
+    </tr>
+  </thead>
+  <tbody>
+{% for item in site.static_files %}
 
 {% assign path = item.path | split:"/" %}
 
@@ -19,7 +28,6 @@
 {% if path[0] == "assets" %}
   {% continue %}
 {% endif %}
-
 {% unless path[1] == year_group %}
 {% capture year_group %}{{path[1]}}{% endcapture %}
 ## {{year_group}}
@@ -34,7 +42,12 @@
 {% capture day_group %}{{path[3]}}{% endcapture %}
 #### {{day_group}}
 {% endunless %}
-  
 {% assign name = item.path | remove_first:"/" | replace:"/"," - " | remove:".html" %}
- * [{{ name }}]({{ item.path }})
+
+    <tr data-link="{{ item.path }}">
+      <td>{{year_group}}/{{month_group}}/{{day_group}}</td>
+      <td>name</td>
+    </tr>
 {% endfor %}
+  </tbody>
+</table>
