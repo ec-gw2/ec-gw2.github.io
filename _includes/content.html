@@ -4,7 +4,7 @@
 
 
 <div class='row'>
-  <div class='col-6'>
+  <div class='col-7'>
 
 {% assign year_group = '' %}
 {% assign month_group = '' %}
@@ -22,13 +22,13 @@
 {% for item in site.static_files %}
 
 {% assign path = item.path | split:"/" %}
-
-{% unless path[1] == "boss-fights" %}
-  {% continue %}
-{% endunless %}
 {% unless path[0] == "" %}
   {% continue %}
 {% endunless %}
+{% unless path[1] == "boss-fights" %}
+  {% continue %}
+{% endunless %}
+
 
 {% unless path[2] == year_group %}
 {% capture year_group %}{{path[2]}}{% endcapture %}
@@ -57,10 +57,9 @@
 {% endfor %}
       </tbody>
     </table>
-
   </div>
 
-  <div class='col-6'>
+  <div class='col-5'>
     <h3>eC Members</h3>
     <ul>
       <li><a href="#">Member</a></li>
