@@ -1,6 +1,12 @@
 ---
 ---
 
+<style>
+.hide {
+  display: none;
+}
+</style>
+
 # eC Raid runs
 
 {% assign year_group = '' %}
@@ -51,7 +57,7 @@
     </tr>
 {% endunless %}
 
-    <tr class="child" data-owner="{{full_date}}" style="/*display:none;*/" onclick="window.open('{{ item.path }}');">
+    <tr class="child" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
       <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
@@ -65,4 +71,9 @@
   new Tablesort(document.getElementById('ec-boss'), {
    descending: true
   });
+  
+  function showGroup(name) {
+    document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
+    document.querySelectorAll('tr.child [data-owner='+name+']').forEach(function(i) {i.classList.remove('hide')})
+  }
 </script>
