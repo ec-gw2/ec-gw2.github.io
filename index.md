@@ -70,9 +70,14 @@
   new Tablesort(document.getElementById('ec-boss'), {
    descending: true
   });
-  
+  var open;
   function showGroup(name) {
     document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
-    document.querySelectorAll('tr.child[data-owner="'+name+'"]').forEach(function(i) {i.classList.remove('hide')})
+    if(open===name) {
+      open = null;
+    } else {
+      document.querySelectorAll('tr.child[data-owner="'+name+'"]').forEach(function(i) {i.classList.remove('hide')})
+      open = name;
+    }
   }
 </script>
