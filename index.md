@@ -1,6 +1,5 @@
 ---
 ---
-
 <style>
 .hide {
   display: none;
