@@ -52,5 +52,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/tablesort.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/sorts/tablesort.date.min.js"></script>
 <script>
-  new Tablesort(document.getElementById('ec-boss'));
+  new Tablesort(document.getElementById('ec-boss'), {
+   descending: true
+  });
 </script>
