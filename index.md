@@ -52,7 +52,7 @@
 {% endunless %}
 
     <tr class="child" data-owner="{{full_date}}" style="/*display:none;*/" onclick="window.open('{{ item.path }}');">
-      <td> - </td>
+      <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
 {% endfor %}
