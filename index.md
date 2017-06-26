@@ -9,7 +9,7 @@
 
 ## Boss Kills
 
-<table>
+<table id='ec-boss'>
   <thead>
     <tr>
       <td>Date</td>
@@ -30,24 +30,27 @@
 {% endif %}
 {% unless path[1] == year_group %}
 {% capture year_group %}{{path[1]}}{% endcapture %}
-## {{year_group}}
 {% endunless %}
 
 {% unless path[2] == month_group %}
 {% capture month_group %}{{path[2]}}{% endcapture %}
-### {{month_group}}
 {% endunless %}
 
 {% unless path[3] == day_group %}
 {% capture day_group %}{{path[3]}}{% endcapture %}
-#### {{day_group}}
 {% endunless %}
 {% assign name = item.path | remove_first:"/" | replace:"/"," - " | remove:".html" %}
 
-    <tr data-link="{{ item.path }}">
+    <tr onclick="window.location='{{ item.path }}'">
       <td>{{year_group}}/{{month_group}}/{{day_group}}</td>
-      <td>name</td>
+      <td>{{ name }}</td>
     </tr>
 {% endfor %}
   </tbody>
 </table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/tablesort.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.0.1/sorts/tablesort.date.min.js"></script>
+<script>
+  new Tablesort(document.getElementById('ec-boss'));
+</script>
