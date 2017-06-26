@@ -27,18 +27,17 @@
   {% continue %}
 {% endunless %}
 
-{% unless path[1] == year_group %}
-{% capture year_group %}{{path[1]}}{% endcapture %}
+{% unless path[2] == year_group %}
+{% capture year_group %}{{path[2]}}{% endcapture %}
 {% endunless %}
 
-{% unless path[2] == month_group %}
-{% capture month_group %}{{path[2]}}{% endcapture %}
+{% unless path[3] == month_group %}
+{% capture month_group %}{{path[3]}}{% endcapture %}
 {% endunless %}
 
-{% unless path[3] == day_group %}
-{% capture day_group %}{{path[3]}}{% endcapture %}
+{% unless path[4] == day_group %}
+{% capture day_group %}{{path[4]}}{% endcapture %}
 {% endunless %}
-{% assign name = item.path | remove_first:"/" | replace:"/"," - " | remove:".html" %}
 
 {% capture _full_date %}{{year_group}}/{{month_group}}/{{day_group}}{% endcapture %}
 {% unless _full_date == full_date %}
