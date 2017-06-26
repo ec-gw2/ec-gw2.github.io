@@ -16,9 +16,9 @@
 
 ## Boss Kills
 
-<table id='ec-boss' style="cursor: pointer;" >
+<table id='ec-boss'>
   <thead>
-    <tr>
+    <tr style="cursor: pointer;" >
       <td data-sort-default>Date</td>
       <td data-sort-method='none'>Boss</td>
     </tr>
@@ -51,7 +51,7 @@
 {% capture _full_date %}{{year_group}}/{{month_group}}/{{day_group}}{% endcapture %}
 {% unless _full_date == full_date %}
 {% assign full_date = _full_date %}
-    <tr onclick="showGroup('{{full_date}}')">
+    <tr style="cursor: pointer;"  onclick="showGroup('{{full_date}}')">
       <td> {{full_date}} </td>
       <td>-- ((click to view)) --</td>
     </tr>
