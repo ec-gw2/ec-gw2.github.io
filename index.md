@@ -55,7 +55,7 @@
       <td>-- ((click to view)) --</td>
     </tr>
 {% endunless %}
-    <tr class="child hide" data-owner="{{full_date}}" onclick="openUrl('{{ item.path }}');">
+    <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
       <td data-sort="{{full_date}}"> - </td>
       <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
     </tr>
@@ -70,18 +70,14 @@
    descending: true
   });
   
-  function openUrl(url) {
-    window.open(url);
-  }
-  
-  var open;
+  var openTab;
   function showGroup(name) {
     document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
-    if(open===name) {
-      open = null;
+    if(openTab===name) {
+      openTab = null;
     } else {
       document.querySelectorAll('tr.child[data-owner="'+name+'"]').forEach(function(i) {i.classList.remove('hide')})
-      open = name;
+      openTab = name;
     }
   }
 </script>
