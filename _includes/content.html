@@ -22,7 +22,8 @@
 {% for item in site.static_files %}
 
 {% assign path = item.path | split:"/" %}
-
+{{item.path}}
+{{path[0]}}
 {% unless path[0] == "boss-fights" %}
   {% continue %}
 {% endunless %}
@@ -49,7 +50,7 @@
 {% endunless %}
         <tr class="child hide" data-owner="{{full_date}}" onclick="window.open('{{ item.path }}');">
           <td data-sort="{{full_date}}"> - </td>
-          <td>{{ path[4] | remove:".html" }} (opens in new window)</td>
+          <td>{{ path[5] | remove:".html" }} (opens in new window)</td>
         </tr>
 {% endfor %}
       </tbody>
