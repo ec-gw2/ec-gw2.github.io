@@ -70,6 +70,7 @@
   new Tablesort(document.getElementById('ec-boss'), {
    descending: true
   });
+  
   var open;
   function showGroup(name) {
     document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
