@@ -22,9 +22,11 @@
 {% for item in site.static_files %}
 
 {% assign path = item.path | split:"/" %}
-{{item.path}}
-{{path[0]}}
-{% unless path[0] == "boss-fights" %}
+
+{% unless path[1] == "boss-fights" %}
+  {% continue %}
+{% endunless %}
+{% unless path[0] == "" %}
   {% continue %}
 {% endunless %}
 
