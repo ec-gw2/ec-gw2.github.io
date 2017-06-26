@@ -43,7 +43,7 @@
 
     <tr onclick="window.location='{{ item.path }}'">
       <td>{{year_group}}/{{month_group}}/{{day_group}}</td>
-      <td>{{ path[4] }} (click to view)</td>
+      <td>{{ path[4] | remove:".html" }} (click to view)</td>
     </tr>
 {% endfor %}
   </tbody>
