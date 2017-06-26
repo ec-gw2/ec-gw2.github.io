@@ -15,7 +15,7 @@
       <thead>
         <tr style="cursor: pointer;" >
           <td data-sort-default>Date</td>
-          <td data-sort-method='none'>Boss</td>
+          <td style="width: 400px;" data-sort-method='none'>Boss</td>
         </tr>
       </thead>
       <tbody>
@@ -23,13 +23,10 @@
 
 {% assign path = item.path | split:"/" %}
 
-{% if path[0] == "EVTC Logs" %}
+{% unless path[0] == "boss-fights" %}
   {% continue %}
-{% endif %}
+{% endunless %}
 
-{% if path[0] == "assets" %}
-  {% continue %}
-{% endif %}
 {% unless path[1] == year_group %}
 {% capture year_group %}{{path[1]}}{% endcapture %}
 {% endunless %}
