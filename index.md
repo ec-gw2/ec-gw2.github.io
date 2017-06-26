@@ -9,10 +9,10 @@
 
 ## Boss Kills
 
-<table id='ec-boss'>
+<table id='ec-boss' style="cursor: pointer;" >
   <thead>
     <tr>
-      <td>Date</td>
+      <td data-sort-default>Date</td>
       <td>Boss</td>
     </tr>
   </thead>
@@ -43,7 +43,7 @@
 
     <tr onclick="window.location='{{ item.path }}'">
       <td>{{year_group}}/{{month_group}}/{{day_group}}</td>
-      <td>{{ name }}</td>
+      <td>{{ path[4] }} (click to view)</td>
     </tr>
 {% endfor %}
   </tbody>
