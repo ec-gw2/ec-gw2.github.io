@@ -80,6 +80,34 @@
       </thead>
       <tbody>
         
+        
+{% assign current_boss = '' %}
+{% for item in site.static_files %}
+        
+{% assign path = item.path | split:"/" %}
+{% unless path[0] == "" %}
+  {% continue %}
+{% endunless %}
+{% unless path[1] == "boss-fights" %}
+  {% continue %}
+{% endunless %}
+{% unless path[2] == "misc" %}
+  {% continue %}
+{% endunless %}
+        
+  {% unless path[3] == current_boss %}
+  {% capture current_boss %}{{path[3]}}{% endcapture %}
+  <tr style="cursor: pointer;"  onclick="showGroup('{{current_boss}}')">
+    <td> {{current_boss}} </td>
+    <td>-- ((click to view)) --</td>
+  </tr>
+  {% endunless %}
+  <tr class="child hide" data-owner="{{current_boss}}" onclick="window.open('{{ item.path }}');">
+    <td> - </td>
+    <td>{{ path[4] | remove:".html" }}</td>
+  </tr>
+{% endfor %}
+
       </tbody>
     </table>
     
