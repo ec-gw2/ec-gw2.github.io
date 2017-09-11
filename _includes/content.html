@@ -85,11 +85,11 @@
 
   var openTab;
   function showGroup(name) {
-    document.querySelectorAll('tr.child').forEach(function(i) {i.classList.add('hide')})
+    document.querySelectorAll('tr.child').forEach(i => i.classList.add('hide'))
     if(openTab===name) {
       openTab = null;
     } else {
-      document.querySelectorAll('tr.child[data-owner="'+name+'"]').forEach(function(i) {i.classList.remove('hide')})
+      document.querySelectorAll(`tr.child[data-owner="${name}"]`).forEach(i => i.classList.remove('hide'))
       openTab = name;
     }
   }
