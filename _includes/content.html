@@ -27,6 +27,11 @@
 {% unless path[1] == "boss-fights" %}
   {% continue %}
 {% endunless %}
+        
+{% if path[2] == 'misc' %}
+{% continue %}
+{% endif %}
+
 
 
 {% unless path[2] == year_group %}
